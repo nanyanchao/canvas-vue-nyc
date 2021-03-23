@@ -233,13 +233,13 @@ export default {
         },
         //画
         draw({
-            start,
+            start = [0, 0],
             radius,
             width,
             notStarted = [],
             notStartedColor,
             color,
-            bgcolr,
+            bgcolor,
             path,
             tags = [],
         }) {
@@ -343,9 +343,8 @@ export default {
             this.cxt = this.canvas.getContext("2d");
             this.initImg();
             this.cxt.clearRect(0, 0, this.width, this.height);
-            console.log(this.width);
             this.cxt.save();
-            this.cxt.fillStyle = this.opt.bgcolr;
+            this.cxt.fillStyle = this.opt.bgcolor;
             this.cxt.fillRect(0, 0, this.width, this.height);
             this.cxt.restore();
 

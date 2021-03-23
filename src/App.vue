@@ -22,7 +22,7 @@ export default {
             opt: {
                 start: [209, 51],
                 radius: 25,
-                bgcolr: "#1226BF",
+                bgcolor: "#1226BF",
                 width: 16,
                 color: "#55cc7c",
                 notStartedColor: "#d9d9d9",
