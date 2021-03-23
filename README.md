@@ -58,6 +58,7 @@ br|下右弧度
 bl|下左弧度
 rb|右下弧度
 rt|右上弧度
+
 ###tip2 point
 point 数据类型 object
 属性 X，Y
