@@ -199,11 +199,9 @@ export default {
             }
             this.cxt.fillStyle = color || this.canvasBGImg[key];
             if (x1) {
-                y = y - w;
                 this.cxt.rect(x, y, x1, w);
                 x = x + x1;
             } else {
-                x = x - w;
                 this.cxt.rect(x, y, w, y + y);
                 y = y + y1;
             }
@@ -212,9 +210,10 @@ export default {
             return { x, y };
         },
         //画点
-        drawPoint({ x, y, color, r, title, d }) {
+        drawPoint({ x, y, color, r, title, d }, width = 0, font = "30px Georgia") {
             this.cxt.beginPath();
-            this.cxt.arc(x + r / 3, y + r / 3, r, 0, 2 * Math.PI);
+            y = y + width / 2
+            this.cxt.arc(x, y, r, 0, 2 * Math.PI);
 
             this.cxt.save();
             this.cxt.fillStyle = color;
@@ -227,7 +226,7 @@ export default {
                 x = x + 2 * r + 10;
                 y = y + r;
             }
-            this.cxt.font = "30px Georgia";
+            this.cxt.font = font;
             this.cxt.fillText(title, x, y);
             this.cxt.restore();
         },
@@ -236,71 +235,50 @@ export default {
             start = [0, 0],
             radius,
             width,
-            notStarted = [],
-            notStartedColor,
             color,
-            bgcolor,
             path,
+            font,
             tags = [],
         }) {
             let [x, y] = start;
             this.cxt.moveTo(x, y);
-
+            const points = []
+            let _color
             path.forEach((p) => {
-                const { X, Y } = p;
-                let point;
-                if (X || Y) {
-                    point = this.drawRect(x, y, X, Y, width);
-                } else if (p === "r") {
-                    point = { x: x + width, y };
-                } else if (p === "l") {
-                    point = { x: x - width, y };
-                } else if (p === "b") {
-                    point = { x, y: y + width };
-                } else if (p === "t") {
-                    point = { x, y: y - width };
+                const { X, Y, title, isDefault } = p;
+                if (title) {
+                    if (isDefault) {
+                        _color = this.opt.defaultColor
+                    } else {
+                        _color = undefined
+                    }
+                    const _point = { ...p, x, y }
+                    this.drawPoint(_point, width, font);
+                    points.push(_point)
                 } else {
-                    point = this.calcDrawArcTo(x, y, radius, p, width, color);
+                    let point;
+                    if (X || Y) {
+                        point = this.drawRect(x, y, X, Y, width, _color);
+                    } else if (p === "r") {
+                        point = { x: x + width, y };
+                    } else if (p === "l") {
+                        point = { x: x - width, y };
+                    } else if (p === "b") {
+                        point = { x, y: y + width };
+                    } else if (p === "t") {
+                        point = { x, y: y - width };
+                    } else {
+                        point = this.calcDrawArcTo(x, y, radius, p, width, _color || color);
+                    }
+                    x = point.x;
+                    y = point.y;
                 }
-                x = point.x;
-                y = point.y;
             });
-            this.cxt.beginPath();
-            notStarted.forEach((p) => {
-                const { X, Y } = p;
-                let point;
-                if (X || Y) {
-                    point = this.drawRect(
-                        x,
-                        y,
-                        X || x,
-                        Y || y,
-                        width,
-                        notStartedColor
-                    );
-                } else if (p === "r") {
-                    point = { x: x + width, y };
-                } else if (p === "l") {
-                    point = { x: x - width, y };
-                } else if (p === "b") {
-                    point = { x, y: y + width };
-                } else if (p === "t") {
-                    point = { x, y: y - width };
-                } else {
-                    point = this.calcDrawArcTo(
-                        x,
-                        y,
-                        radius,
-                        p,
-                        width,
-                        notStartedColor
-                    );
-                }
-                x = point.x;
-                y = point.y;
+            points.forEach(p => {
+                this.drawPoint(p, width, font);
             });
             tags.forEach((p) => {
-                this.drawPoint(p);
+                this.drawPoint(p, font);
             });
         },
 
@@ -347,17 +325,6 @@ export default {
             this.cxt.fillStyle = this.opt.bgcolor;
             this.cxt.fillRect(0, 0, this.width, this.height);
             this.cxt.restore();
-
-            // this.cxt.beginPath();
-            // for (let i = 50; i < this.width; i += 50) {
-            //     this.cxt.moveTo(i, 0);
-            //     this.drawLine(i, this.height);
-            // }
-            // for (let i = 50; i < this.height; i += 50) {
-            //     this.cxt.moveTo(0, i);
-            //     this.drawLine(this.width, i);
-            // }
-            // this.cxt.stroke();
             this.cxt.beginPath();
 
             this.draw(this.opt);
@@ -365,8 +332,9 @@ export default {
     },
     mounted() {
         this.canvas = this.$refs.canvas;
+        this.startDraw()
         this.$nextTick(() => {
-            this.setIntervalStorage = setInterval(this.startDraw, 1000);
+            // this.setIntervalStorage = setInterval(this.startDraw, 1000);
         });
     },
     beforeDestroy() {

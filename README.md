@@ -37,16 +37,16 @@ export default {
 | bgcolor         | 用来划线的属性               | object | --     |
 | width           | 线的宽度                     | number | --     |
 | color           | 线的颜色                     | color  | --     |
-| notStartedColor | 未开始线段                   | color  | --     |
+| defaultColor    | 默认颜色                   | color  | --     |
 | path            | 线的路径（见 tip 1）         | array  | --     |
 | tags            | 标示                         | array  | --     |
-| notStarted      | 未开始路线的路径（见 tip 1） | array  | --     |
 
 ### tip1 路径说明
 
 | 项    | 说明                |
 | ----- | ------------------- |
 | point | 画图坐标（见 tip2） |
+| isDefault | 是否使用默认颜色 |
 | b     | 向下移动一个宽度    |
 | t     | 向上移动一个宽度    |
 | l     | 向左移动一个宽度    |
