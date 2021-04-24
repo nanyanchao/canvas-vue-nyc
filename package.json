@@ -1,6 +1,6 @@
 {
   "name": "canvas-vue-nyc",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "xiaolan",
   "keywords": ["vue","canvas","折线","曲线","曲别针"],
   "description": "自定义画线",

@@ -332,9 +332,9 @@ export default {
     },
     mounted() {
         this.canvas = this.$refs.canvas;
-        this.startDraw()
+        // this.startDraw()
         this.$nextTick(() => {
-            // this.setIntervalStorage = setInterval(this.startDraw, 1000);
+            this.setIntervalStorage = setInterval(this.startDraw, 1000);
         });
     },
     beforeDestroy() {
